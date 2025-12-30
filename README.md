@@ -1,6 +1,6 @@
 # Follower Detection Util (OpenMW)
 
-Mod library for convenient follower tracking.
+Mod library for centralized and convenient follower tracking.
 
 ***If you're a player, this is just a dependency for other mods. It doesn't do anything on its own.***
 
