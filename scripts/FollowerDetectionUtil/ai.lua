@@ -4,7 +4,7 @@ local I = require('openmw.interfaces')
 function GetLeader()
     local leader
     I.AI.forEachPackage(function(pkg)
-        if pkg.type == "Follow" then
+        if pkg.type == "Follow" or pkg.type == "Escort" then
             leader = pkg.target
             return
         end

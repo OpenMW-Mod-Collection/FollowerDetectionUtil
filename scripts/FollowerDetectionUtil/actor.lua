@@ -13,7 +13,7 @@ end
 
 ---@param pkgType string
 local function removeAIPackage(pkgType)
-    if pkgType == "Follow" then
+    if pkgType == "Follow" or pkgType == "Escort" then
         state:setLeader(nil)
     end
 end
@@ -39,6 +39,6 @@ return {
     },
     interfaceName = 'FollowerDetectionUtil',
     interface = {
-        getState = function () return state end,
+        getState = function() return state end,
     },
 }

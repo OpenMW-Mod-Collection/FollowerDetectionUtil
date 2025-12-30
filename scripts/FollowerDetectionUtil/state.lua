@@ -3,8 +3,8 @@ local omw_self = require("openmw.self")
 local types = require("openmw.types")
 
 ---@class State
----@field leader types.Actor|nil
----@field superLeader types.Actor|nil
+---@field leader types.NPC|types.Creature|nil
+---@field superLeader types.NPC|types.Creature|nil
 ---@field followsPlayer boolean
 local State = {}
 State.__index = State
