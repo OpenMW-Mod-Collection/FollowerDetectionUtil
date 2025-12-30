@@ -17,9 +17,11 @@ Each NPC and Creature is assigned a `State`:
 For each NPC and Creature:
 
 - On being loaded
-- On AI packet being added
+- On AI packet being added (by a Lua script, not the engine)
 - On AI packet being removed
+- On target change (Player script -> OMWMusicCombatTargetsChanged)
 
+`State` for already loaded Actors might take and additional frame to update.  
 Super Leader might take an additional frame to get its value set.
 
 ## Usage

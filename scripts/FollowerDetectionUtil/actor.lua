@@ -1,13 +1,13 @@
-require("scripts.FollowerDetectionUtil.state")
+local State = require("scripts.FollowerDetectionUtil.state")
+require("scripts.FollowerDetectionUtil.ai")
 
 -- state
-local state = InitState()
+local state = State:new(GetLeader())
 
 ---@param pkg table { type = string, target = types.Actor }
 local function startAIPackage(pkg)
-    if pkg.type == "Follow" then
-        state:setLeader(pkg.type)
-        state:checkSuperLeader()
+    if pkg.type == "Follow" or pkg.type == "Escort" then
+        state:setLeader(pkg.target)
     end
 end
 
@@ -18,10 +18,14 @@ local function removeAIPackage(pkgType)
     end
 end
 
--- Happens in the summoner's script
+local function reInitState()
+    state = State:new(GetLeader())
+end
+
+-- happens in the summoner's script
 ---@param data table { sender = types.Actor }
-local function checkSummonersLeader(data)
-    data.sender:sendEvent("Summon_SetLeader", { superLeader = state.leader })
+local function setSuperLeaderMiddleware(data)
+    data.sender:sendEvent("SetSuperLeader", { superLeader = state.leader })
 end
 
 ---@param data table { superLeader = types.Actor|nil }
@@ -34,8 +38,9 @@ return {
         StartAIPackage = startAIPackage,
         RemoveAIPackage = removeAIPackage,
         -- custom events
-        Summon_CheckSummonersLeader = checkSummonersLeader,
-        Summon_SetLeader = setSuperLeader,
+        ReInitState = reInitState,
+        Summoner_SetSuperLeaderMiddleware = setSuperLeaderMiddleware,
+        SetSuperLeader = setSuperLeader,
     },
     interfaceName = 'FollowerDetectionUtil',
     interface = {

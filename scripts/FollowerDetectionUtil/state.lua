@@ -16,6 +16,10 @@ function State:new(leader)
     self.leader = leader
     self.superLeader = nil
     self.followsPlayer = leader and leader.type == types.Player
+
+    if leader then
+        self:checkSuperLeader()
+    end
     return self
 end
 
@@ -23,6 +27,10 @@ end
 function State:setLeader(leader)
     self.leader = leader
     self.followsPlayer = leader and leader.type == types.Player
+
+    if leader then
+        self.checkSuperLeader(self)
+    end
 end
 
 function State:setSuperLeader(superLeader)
@@ -36,17 +44,8 @@ function State:checkSuperLeader()
 
     if not self.followsPlayer and isSummon then
         ---@diagnostic disable-next-line: undefined-field
-        self.leader:sendEvent("Summon_CheckSummonersLeader", { sender = omw_self })
+        self.leader:sendEvent("Summoner_SetSuperLeaderMiddleware", { sender = omw_self })
     end
 end
 
----@return State
-function InitState()
-    local leader = GetLeader()
-    if not leader then return State:new(nil) end
-
-    local state = State:new(leader)
-    state:checkSuperLeader()
-
-    return state
-end
+return State
