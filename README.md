@@ -44,6 +44,20 @@ Available interface endpoints:
 --- Script scope: NPC, Creature
 --- @return State
 I.FollowerDetectionUtil.getState()
+
+--- Returns State of each current follower.
+--- Script scope: NPC, Creature, Player
+--- @return { followers: table<Actor, State> }
+I.FollowerDetectionUtil.getFollowerList()
+```
+
+Interesting events:
+
+```lua
+--- Returns State of each current follower.
+--- Script scope: NPC, Creature, Player
+--- @return { followers: table<Actor, State> }
+FDU_UpdateFollowerList
 ```
 
 ## Credits

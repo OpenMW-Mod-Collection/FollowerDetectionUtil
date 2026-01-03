@@ -1,8 +1,9 @@
-local State = require("scripts.FollowerDetectionUtil.state")
-require("scripts.FollowerDetectionUtil.ai")
+local State = require("scripts.FollowerDetectionUtil.model.state")
+require("scripts.FollowerDetectionUtil.logic.ai")
 
 -- state
 local state = State:new(GetLeader())
+local followers = {}
 
 ---@param pkg table { type = string, target = types.Actor }
 local function startAIPackage(pkg)
@@ -25,7 +26,7 @@ end
 -- happens in the summoner's script
 ---@param data table { sender = types.Actor }
 local function setSuperLeaderMiddleware(data)
-    data.sender:sendEvent("SetSuperLeader", { superLeader = state.leader })
+    data.sender:sendEvent("FDU_SetSuperLeader", { superLeader = state.leader })
 end
 
 ---@param data table { superLeader = types.Actor|nil }
@@ -33,17 +34,23 @@ local function setSuperLeader(data)
     state:setSuperLeader(data.superLeader)
 end
 
+
+local function updateFollowerList(data)
+    followers = data.followers
+end
+
 return {
     eventHandlers = {
         StartAIPackage = startAIPackage,
         RemoveAIPackage = removeAIPackage,
-        -- custom events
-        ReInitState = reInitState,
-        Summoner_SetSuperLeaderMiddleware = setSuperLeaderMiddleware,
-        SetSuperLeader = setSuperLeader,
+        FDU_ReInitState = reInitState,
+        FDU_Summoner_SetSuperLeaderMiddleware = setSuperLeaderMiddleware,
+        FDU_SetSuperLeader = setSuperLeader,
+        FDU_UpdateFollowerList = updateFollowerList,
     },
     interfaceName = 'FollowerDetectionUtil',
     interface = {
         getState = function() return state end,
+        getFollowerList = function() return followers end,
     },
 }

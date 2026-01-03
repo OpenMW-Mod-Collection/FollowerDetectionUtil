@@ -1,6 +1,8 @@
 ---@diagnostic disable: undefined-doc-name
 local omw_self = require("openmw.self")
 local types = require("openmw.types")
+local core = require("openmw.core")
+local self = require("openmw.self")
 
 ---@class State
 ---@field leader types.NPC|types.Creature|nil
@@ -37,6 +39,11 @@ function State:setLeader(leader)
     if leader then
         self.checkSuperLeader(self)
     end
+
+    core.sendGlobalEvent("FDU_UpdateFollowerList", {
+        sender = omw_self,
+        state = self
+    })
 end
 
 function State:setSuperLeader(superLeader)
@@ -50,7 +57,7 @@ function State:checkSuperLeader()
 
     if not self.followsPlayer and isSummon then
         ---@diagnostic disable-next-line: undefined-field
-        self.leader:sendEvent("Summoner_SetSuperLeaderMiddleware", { sender = omw_self })
+        self.leader:sendEvent("FDU_Summoner_SetSuperLeaderMiddleware", { sender = omw_self })
     end
 end
 
