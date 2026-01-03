@@ -13,13 +13,7 @@ State.__index = State
 ---@return State
 function State:new(leader)
     self = setmetatable({}, State)
-    self.leader = leader
-    self.superLeader = nil
-    self.followsPlayer = leader and leader.type == types.Player
-
-    if leader then
-        self:checkSuperLeader()
-    end
+    self:setLeader(leader)
     return self
 end
 
@@ -34,10 +28,10 @@ function State:__tostring()
     return table.concat(lines, "\n")
 end
 
-
 ---@param leader unknown
 function State:setLeader(leader)
     self.leader = leader
+    self.superLeader = nil
     self.followsPlayer = leader and leader.type == types.Player
 
     if leader then

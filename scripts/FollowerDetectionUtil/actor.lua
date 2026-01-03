@@ -19,7 +19,7 @@ local function removeAIPackage(pkgType)
 end
 
 local function reInitState()
-    state = State:new(GetLeader())
+    state:setLeader(GetLeader())
 end
 
 -- happens in the summoner's script
