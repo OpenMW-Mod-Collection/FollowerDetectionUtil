@@ -23,6 +23,18 @@ function State:new(leader)
     return self
 end
 
+function State:__tostring()
+    local lines = {
+        "State(",
+        "  followsPlayer = " .. tostring(self.followsPlayer),
+        "  leader        = " .. tostring(self.leader),
+        "  superLeader   = " .. tostring(self.superLeader),
+        ")",
+    }
+    return table.concat(lines, "\n")
+end
+
+
 ---@param leader unknown
 function State:setLeader(leader)
     self.leader = leader
