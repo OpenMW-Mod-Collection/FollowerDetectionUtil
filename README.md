@@ -47,7 +47,7 @@ I.FollowerDetectionUtil.getState()
 
 --- Returns State of each current follower.
 --- Script scope: NPC, Creature, Player
---- @return { followers: table<Actor, State> }
+--- @return { followers: table<actorId, State> }
 I.FollowerDetectionUtil.getFollowerList()
 ```
 
@@ -56,7 +56,7 @@ Interesting events:
 ```lua
 --- Returns State of each current follower.
 --- Script scope: NPC, Creature, Player
---- @return { followers: table<Actor, State> }
+--- @return { followers: table<actorId, State> }
 FDU_UpdateFollowerList
 ```
 

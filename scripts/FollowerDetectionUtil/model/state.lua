@@ -41,7 +41,7 @@ function State:setLeader(leader)
     end
 
     core.sendGlobalEvent("FDU_UpdateFollowerList", {
-        sender = omw_self,
+        senderId = omw_self.id,
         state = self
     })
 end

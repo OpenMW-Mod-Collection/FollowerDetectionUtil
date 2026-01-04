@@ -3,7 +3,7 @@ local world = require("openmw.world")
 local followers = {}
 
 local function updateFollowerList(data)
-    followers[data.sender] = data.state
+    followers[data.senderId] = data.state
 
     for follower, _ in pairs(followers) do
         follower:sendEvent("FDU_UpdateFollowerList", { followers = followers })
