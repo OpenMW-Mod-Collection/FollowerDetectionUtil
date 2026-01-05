@@ -1,6 +1,6 @@
 local I = require('openmw.interfaces')
 
----@return unknown -- openmw.types.Actor|nil
+---@return any
 function GetLeader()
     local leader
     I.AI.forEachPackage(function(pkg)

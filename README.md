@@ -46,7 +46,7 @@ Available interface endpoints:
 I.FollowerDetectionUtil.getState()
 
 --- Returns State of each current follower.
---- Script scope: NPC, Creature, Player
+--- Script scope: Global, NPC, Creature, Player
 --- @return { followers: table<actorId, State> }
 I.FollowerDetectionUtil.getFollowerList()
 ```
