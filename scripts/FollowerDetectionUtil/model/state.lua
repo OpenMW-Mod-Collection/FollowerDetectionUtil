@@ -1,17 +1,16 @@
----@diagnostic disable: undefined-doc-name
 local omw_self = require("openmw.self")
 local types = require("openmw.types")
 local core = require("openmw.core")
-local self = require("openmw.self")
+local I = require("openmw.interfaces")
 
 ---@class State
----@field leader types.NPC|types.Creature|nil
----@field superLeader types.NPC|types.Creature|nil
+---@field leader any|nil
+---@field superLeader any|nil
 ---@field followsPlayer boolean
 local State = {}
 State.__index = State
 
----@param leader unknown
+---@param leader any
 ---@return State
 function State:new(leader)
     self = setmetatable({}, State)
@@ -30,35 +29,37 @@ function State:__tostring()
     return table.concat(lines, "\n")
 end
 
----@param leader unknown
-function State:setLeader(leader)
-    self.leader = leader
-    self.superLeader = nil
-    self.followsPlayer = leader and leader.type == types.Player
-
-    if leader then
-        self.checkSuperLeader(self)
-    end
-
+---Has to be called only after all the events get fired!
+function State:updateFollowerList()
     core.sendGlobalEvent("FDU_UpdateFollowerList", {
         senderId = omw_self.id,
         state = self
     })
 end
 
-function State:setSuperLeader(superLeader)
-    self.superLeader = superLeader
-    self.followsPlayer = superLeader and superLeader.type == types.Player
+---@param leader any
+function State:setLeader(leader)
+    self.leader = leader
+    self.followsPlayer = leader and leader.type == types.Player or false
+    self.setSuperLeader(self)
+
+    self.updateFollowerList(self)
 end
 
-function State:checkSuperLeader()
+function State:setSuperLeader()
     local isSummon = string.find(omw_self.recordId, "_summon$")
         or string.find(omw_self.recordId, "_summ$")
-
-    if not self.followsPlayer and isSummon then
-        ---@diagnostic disable-next-line: undefined-field
-        self.leader:sendEvent("FDU_Summoner_SetSuperLeaderMiddleware", { sender = omw_self })
+    
+    if not (self.leader and isSummon) then
+        self.superLeader = nil
+        return
     end
+    
+    local followerList = I.FollowerDetectionUtil.getFollowerList()
+    local superLeader = followerList[self.leader.id]
+
+    self.superLeader = superLeader
+    self.followsPlayer = superLeader and superLeader.type == types.Player or false
 end
 
 return State
