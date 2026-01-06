@@ -8,6 +8,7 @@ Mod library for centralized and convenient follower tracking.
 
 Each NPC and Creature is assigned a `State`:
 
+- Actor - actor's object
 - Leader - an actor that is being followed
 - Super Leader - an actor which leader follows (used mostly for summons)
 - Follows player - a flag which sets to True if either Leader or Super Leader is a player
@@ -21,15 +22,13 @@ For each NPC and Creature:
 - On AI packet being removed
 - On target change (Player script -> OMWMusicCombatTargetsChanged)
 
-`State` for already loaded Actors might take and additional frame to update.  
-Super Leader might take an additional frame to get its value set.
-
 ## Usage
 
 `State` schema:
 
 ```lua
 ---@class State
+---@field actor types.NPC|types.Creature|nil
 ---@field leader types.NPC|types.Creature|nil
 ---@field superLeader types.NPC|types.Creature|nil
 ---@field followsPlayer boolean

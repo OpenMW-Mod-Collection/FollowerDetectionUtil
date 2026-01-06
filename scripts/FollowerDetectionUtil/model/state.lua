@@ -4,6 +4,7 @@ local core = require("openmw.core")
 local I = require("openmw.interfaces")
 
 ---@class State
+---@field actor any|nil
 ---@field leader any|nil
 ---@field superLeader any|nil
 ---@field followsPlayer boolean
@@ -14,6 +15,7 @@ State.__index = State
 ---@return State
 function State:new(leader)
     self = setmetatable({}, State)
+    self.actor = omw_self
     self:setLeader(leader)
     return self
 end
@@ -21,6 +23,7 @@ end
 function State:__tostring()
     local lines = {
         "State(",
+        "  actor         = " .. tostring(self.actor),
         "  followsPlayer = " .. tostring(self.followsPlayer),
         "  leader        = " .. tostring(self.leader),
         "  superLeader   = " .. tostring(self.superLeader),
@@ -32,7 +35,6 @@ end
 ---Has to be called only after all the events get fired!
 function State:updateFollowerList()
     core.sendGlobalEvent("FDU_UpdateFollowerList", {
-        senderId = omw_self.id,
         state = self
     })
 end
@@ -47,19 +49,17 @@ function State:setLeader(leader)
 end
 
 function State:setSuperLeader()
-    local isSummon = string.find(omw_self.recordId, "_summon$")
-        or string.find(omw_self.recordId, "_summ$")
-    
+    local isSummon = string.find(self.actor.recordId, "_summon$")
+        or string.find(self.actor.recordId, "_summ$")
+
     if not (self.leader and isSummon) then
         self.superLeader = nil
         return
     end
-    
-    local followerList = I.FollowerDetectionUtil.getFollowerList()
-    local superLeader = followerList[self.leader.id]
 
-    self.superLeader = superLeader
-    self.followsPlayer = superLeader and superLeader.type == types.Player or false
+    local followerList = I.FollowerDetectionUtil.getFollowerList()
+    self.superLeader = followerList[self.leader.id]
+    self.followsPlayer = self.superLeader and self.superLeader.type == types.Player or false
 end
 
 return State
