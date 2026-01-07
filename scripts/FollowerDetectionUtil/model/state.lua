@@ -55,14 +55,6 @@ function State:setLeader(leader)
 end
 
 function State:setSuperLeader()
-    local isSummon = string.find(self.actor.recordId, "_summon$")
-        or string.find(self.actor.recordId, "_summ$")
-
-    if not (self.leader and isSummon) then
-        self.superLeader = nil
-        return
-    end
-
     local followerList = I.FollowerDetectionUtil.getFollowerList()
 
     if not followerList[self.leader.id]:isValid() then

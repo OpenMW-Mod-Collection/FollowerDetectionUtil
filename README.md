@@ -2,25 +2,31 @@
 
 Library for centralized and convenient follower tracking.
 
-***If you're a player, this is just a dependency for other mods. It doesn't do anything on its own.***
+**_If you're a player, this is just a dependency for other mods. It doesn't do anything on its own._**
+
+## Overview
+
+_Or why you should use this utility._
+
+Follower Detection Util (FDU) has two primary goals:
+
+1. **Centralize follower detection.**  
+   Follower status is calculated once and shared across all follower-related mods, instead of being re-evaluated independently by each one.
+2. **Make follower tracking convenient.**  
+   Instantly access follower state from almost any script scope (Global, Player, NPC, Creature), register handlers for follower state changes, and query relationships with minimal overhead.
 
 ## Idea
 
-Each NPC and Creature is assigned a `State`:
+Each NPC and Creature is assigned a `State` containing:
 
-- Actor - actor's object
-- Leader - an actor that is being followed
-- Super Leader - an actor which leader follows (used mostly for summons)
-- Follows player - a flag which sets to True if either Leader or Super Leader is a player
+- **Actor** - the actor this state belongs to
+- **Leader** - the actor being followed
+- **Super Leader** - the actor the leader follows (used mainly for summons)
+- **Follows player** - `true` if either Leader or Super Leader is the player
 
-## When the `State` is Being Updated
+There's also a `FollowerList` that is being shared between all actors, players and a global scripts. It is indexed by `actor.id` (not `actor.recordId`) and contains all the `States` which have a `Leader`.
 
-For each NPC and Creature:
-
-- On being loaded
-- On AI packet being added (by a Lua script, not the engine)
-- On AI packet being removed
-- On target change (Player script -> OMWMusicCombatTargetsChanged)
+Both `State` and `FollowerList` can be accessed with FDU interfaces.
 
 ## Usage
 
@@ -28,13 +34,11 @@ For each NPC and Creature:
 
 ```lua
 ---@class State
----@field actor types.NPC|types.Creature|nil
----@field leader types.NPC|types.Creature|nil
----@field superLeader types.NPC|types.Creature|nil
+---@field actor types.NPC|types.Creature
+---@field leader types.Actor|nil
+---@field superLeader types.Actor|nil
 ---@field followsPlayer boolean
 ```
-
-API is context-sensitive and always operates on the NPC or Creature whose script is calling it.
 
 Available interface endpoints:
 
@@ -46,25 +50,27 @@ I.FollowerDetectionUtil.getState()
 
 --- Returns State of each current follower.
 --- Script scope: Global, NPC, Creature, Player
---- @return { followers: table<actorId, State> }
+--- @return { followers: table<actor.id, State> }
 I.FollowerDetectionUtil.getFollowerList()
 ```
 
-Interesting events:
+Available events:
 
 ```lua
 --- Returns State of each current follower.
 --- Sent on: follower list being updated
 --- Script scope: NPC, Creature, Player
---- @return { followers: table<actorId, State> }
+--- @return { followers: table<actor.id, State> }
 FDU_UpdateFollowerList
 
 --- Returns State of each current follower.
 --- Sent on: follower list being updated
 --- Script scope: Global
---- @return { followers: table<actorId, State> }
+--- @return { followers: table<actor.id, State> }
 FDU_FollowerListUpdated
 ```
+
+As a practical example of FDU in use, see my Friendlier Fire mod ([Nexus](https://www.nexusmods.com/morrowind/mods/57975), [GitHub](https://github.com/OpenMW-Mod-Collection/FriendlierFire)).
 
 ## Credits
 
