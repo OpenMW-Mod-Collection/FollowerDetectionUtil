@@ -1,0 +1,5 @@
+page_name: Follower Detection Util
+page_description: Library for centralized and convenient follower tracking.
+
+settings_groupName: Settings
+checkFollowersEvery_name: Check Followers Every N Seconds

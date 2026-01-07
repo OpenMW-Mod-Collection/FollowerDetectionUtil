@@ -1,3 +1,6 @@
 PLAYER: scripts/FollowerDetectionUtil/player.lua
 NPC, CREATURE: scripts/FollowerDetectionUtil/actor.lua
 GLOBAL: scripts/FollowerDetectionUtil/global.lua
+
+MENU: scripts/FollowerDetectionUtil/settingsMenu.lua
+GLOBAL: scripts/FollowerDetectionUtil/settingsGlobal.lua

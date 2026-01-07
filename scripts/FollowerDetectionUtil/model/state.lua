@@ -41,6 +41,12 @@ end
 
 ---@param leader any
 function State:setLeader(leader)
+    if leader and not leader:isValid() then
+        self.setLeader(self, nil)
+    end
+
+    if leader == self.leader then return end
+
     self.leader = leader
     self.followsPlayer = leader and leader.type == types.Player or false
     self.setSuperLeader(self)
@@ -58,6 +64,12 @@ function State:setSuperLeader()
     end
 
     local followerList = I.FollowerDetectionUtil.getFollowerList()
+
+    if not followerList[self.leader.id]:isValid() then
+        self.superLeader = nil
+        return
+    end
+
     self.superLeader = followerList[self.leader.id]
     self.followsPlayer = self.superLeader and self.superLeader.type == types.Player or false
 end

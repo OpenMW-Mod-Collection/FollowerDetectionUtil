@@ -1,38 +1,64 @@
+local storage = require("openmw.storage")
+local self = require("openmw.self")
+
 local State = require("scripts.FollowerDetectionUtil.model.state")
 require("scripts.FollowerDetectionUtil.logic.ai")
 
--- state
+local settings = storage.globalSection("SettingsFollowerDetectionUtil_settings")
+local updateTime = math.random() * math.max(0, settings:get('checkFollowersEvery'))
 local state = State:new(GetLeader())
 local followers = {}
 
----@param pkg { type: string, target: any }
+local function onUpdate(dt)
+    updateTime = updateTime + dt
+    local checkEvery = math.max(0, settings:get('checkFollowersEvery'))
+
+    if updateTime < checkEvery then return end
+
+    if checkEvery == 0 then
+        updateTime = 0
+    else
+        while updateTime > checkEvery do
+            updateTime = updateTime - checkEvery
+        end
+    end
+
+    local leader = nil
+    if not self.type.isDead(self) then
+        leader = GetLeader()
+    end
+
+    state:setLeader(leader)
+end
+
+local function died()
+    state:setLeader(nil)
+end
+
 local function startAIPackage(pkg)
-    if pkg.type == "Follow" or pkg.type == "Escort" then
+    if (pkg.type == "Follow" or pkg.type == "Escort") and pkg.target:isValid() then
         state:setLeader(pkg.target)
     end
 end
 
----@param pkgType string
 local function removeAIPackage(pkgType)
     if pkgType == "Follow" or pkgType == "Escort" then
         state:setLeader(nil)
     end
 end
 
-local function reInitState()
-    state:setLeader(GetLeader())
-end
-
----@param data { followers: table<State> }
 local function updateFollowerList(data)
     followers = data.followers
 end
 
 return {
+    engineHandlers = {
+        onUpdate = onUpdate,
+    },
     eventHandlers = {
+        Died = died,
         StartAIPackage = startAIPackage,
         RemoveAIPackage = removeAIPackage,
-        FDU_ReInitState = reInitState,
         FDU_UpdateFollowerList = updateFollowerList,
     },
     interfaceName = 'FollowerDetectionUtil',

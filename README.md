@@ -1,6 +1,6 @@
 # Follower Detection Util (OpenMW)
 
-Mod library for centralized and convenient follower tracking.
+Library for centralized and convenient follower tracking.
 
 ***If you're a player, this is just a dependency for other mods. It doesn't do anything on its own.***
 
@@ -54,9 +54,16 @@ Interesting events:
 
 ```lua
 --- Returns State of each current follower.
+--- Sent on: follower list being updated
 --- Script scope: NPC, Creature, Player
 --- @return { followers: table<actorId, State> }
 FDU_UpdateFollowerList
+
+--- Returns State of each current follower.
+--- Sent on: follower list being updated
+--- Script scope: Global
+--- @return { followers: table<actorId, State> }
+FDU_FollowerListUpdated
 ```
 
 ## Credits
