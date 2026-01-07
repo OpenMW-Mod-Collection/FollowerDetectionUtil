@@ -55,15 +55,22 @@ function State:setLeader(leader)
 end
 
 function State:setSuperLeader()
+    -- skip 1 frame to initialize the script first
+    if not I.FollowerDetectionUtil then
+        self.leader = nil
+        return
+    end
+
     local followerList = I.FollowerDetectionUtil.getFollowerList()
 
-    if not followerList[self.leader.id]:isValid() then
+    local superLeader = followerList[self.leader.id]
+    if not superLeader or not superLeader:isValid() then
         self.superLeader = nil
         return
     end
 
-    self.superLeader = followerList[self.leader.id]
-    self.followsPlayer = self.superLeader and self.superLeader.type == types.Player or false
+    self.superLeader = superLeader
+    self.followsPlayer = superLeader and superLeader.type == types.Player or false
 end
 
 return State
