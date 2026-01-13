@@ -9,6 +9,10 @@ local updateTime = math.random() * math.max(0, settings:get('checkFollowersEvery
 local state = State:new(GetLeader())
 local followers = {}
 
+-- +-----------------+
+-- | Engine handlers |
+-- +-----------------+
+
 local function onUpdate(dt)
     updateTime = updateTime + dt
     local checkEvery = math.max(0, settings:get('checkFollowersEvery'))
@@ -30,6 +34,20 @@ local function onUpdate(dt)
 
     state:setLeader(leader)
 end
+
+local function onSave()
+    return followers
+end
+
+local function onLoad(saveData)
+    if saveData then
+        followers = saveData
+    end
+end
+
+-- +----------------+
+-- | Event handlers |
+-- +----------------+
 
 local function died()
     state:setLeader(nil)
@@ -54,6 +72,8 @@ end
 return {
     engineHandlers = {
         onUpdate = onUpdate,
+        onSave = onSave,
+        onLoad = onLoad,
     },
     eventHandlers = {
         Died = died,

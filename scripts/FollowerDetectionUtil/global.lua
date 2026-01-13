@@ -3,16 +3,7 @@ local core = require("openmw.core")
 
 local followers = {}
 
-local function updateFollowerList(data)
-    local state = data.state
-    -- irrelevant data filter
-    local stateUnchanged = followers[state.actor.id] == state
-    local randomBozo = not followers[state.actor.id] and not state.followsPlayer
-    if stateUnchanged or randomBozo then return end
-
-    followers[state.actor.id] = state
-
-    -- broadcasting new follower list back to each actor
+local function notifyOtherScripts()
     for _, fState in pairs(followers) do
         fState.actor:sendEvent("FDU_UpdateFollowerList", { followers = followers })
     end
@@ -24,7 +15,31 @@ local function updateFollowerList(data)
     core.sendGlobalEvent("FDU_FollowerListUpdated", { followers = followers })
 end
 
+local function onSave()
+    return followers
+end
+
+local function onLoad(saveData)
+    if saveData then
+        followers = saveData
+    end
+end
+
+local function updateFollowerList(data)
+    local state = data.state
+    
+    -- duplicate
+    if followers[state.actor.id] == state then return end
+
+    followers[state.actor.id] = state
+    notifyOtherScripts()
+end
+
 return {
+    engineHandlers = {
+        onSave = onSave,
+        onLoad = onLoad,
+    },
     eventHandlers = {
         FDU_UpdateFollowerList = updateFollowerList
     },

@@ -32,6 +32,17 @@ function State:__tostring()
     return table.concat(lines, "\n")
 end
 
+local function eqId(x)
+    return x and x.id or nil
+end
+
+function State:__eq(a, b)
+    return eqId(a.actor)       == eqId(b.actor)
+       and eqId(a.leader)      == eqId(b.leader)
+       and eqId(a.superLeader) == eqId(b.superLeader)
+       and a.followsPlayer     == b.followsPlayer
+end
+
 ---Has to be called only after all the events get fired!
 function State:updateFollowerList()
     core.sendGlobalEvent("FDU_UpdateFollowerList", {
@@ -41,36 +52,35 @@ end
 
 ---@param leader any
 function State:setLeader(leader)
-    if leader and not leader:isValid() then
-        self.setLeader(self, nil)
-    end
-
     if leader == self.leader then return end
 
     self.leader = leader
     self.followsPlayer = leader and leader.type == types.Player or false
-    self.setSuperLeader(self)
+
+    if leader then
+        self.setSuperLeader(self)
+    end
 
     self.updateFollowerList(self)
 end
 
 function State:setSuperLeader()
-    -- skip 1 frame to initialize the script first
+    -- skip first update to initialize the script first
     if not I.FollowerDetectionUtil then
         self.leader = nil
         return
     end
 
     local followerList = I.FollowerDetectionUtil.getFollowerList()
+    local leaderState = followerList[self.leader.id]
 
-    local superLeader = followerList[self.leader.id]
-    if not superLeader or not superLeader:isValid() then
+    if not (leaderState and leaderState.leader) then
         self.superLeader = nil
         return
     end
 
-    self.superLeader = superLeader
-    self.followsPlayer = superLeader and superLeader.type == types.Player or false
+    self.superLeader = leaderState.leader
+    self.followsPlayer = leaderState.leader.type == types.Player or false
 end
 
 return State
