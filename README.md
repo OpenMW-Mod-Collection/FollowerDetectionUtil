@@ -53,7 +53,7 @@ I.FollowerDetectionUtil.getState()
 --- @return { followers: table<actor.id, State> }
 I.FollowerDetectionUtil.getFollowerList()
 
---- Returns version of the interface
+--- Returns version of the mod.
 --- Script scope: Global, NPC, Creature, Player
 --- @return number
 I.FollowerDetectionUtil.version
