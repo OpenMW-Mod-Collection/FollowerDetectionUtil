@@ -1,6 +1,8 @@
 local world = require("openmw.world")
 local core = require("openmw.core")
 
+require("scripts.FollowerDetectionUtil.utils.consts")
+
 local followers = {}
 
 local function notifyOtherScripts()
@@ -45,6 +47,7 @@ return {
     },
     interfaceName = 'FollowerDetectionUtil',
     interface = {
+        version = ModVersion,
         getFollowerList = function() return followers end,
     },
 }

@@ -1,5 +1,11 @@
 # Follower Detection Util (OpenMW)
 
+## 1.1.1
+
+### Changes
+
+- Added mod version to the interface
+
 ## 1.1
 
 ### Changes

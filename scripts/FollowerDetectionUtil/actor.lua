@@ -3,6 +3,7 @@ local self = require("openmw.self")
 
 local State = require("scripts.FollowerDetectionUtil.model.state")
 require("scripts.FollowerDetectionUtil.logic.ai")
+require("scripts.FollowerDetectionUtil.utils.consts")
 
 local settings = storage.globalSection("SettingsFollowerDetectionUtil_settings")
 local updateTime = math.random() * math.max(0, settings:get('checkFollowersEvery'))
@@ -83,6 +84,7 @@ return {
     },
     interfaceName = 'FollowerDetectionUtil',
     interface = {
+        version = ModVersion,
         getState = function() return state end,
         getFollowerList = function() return followers end,
     },

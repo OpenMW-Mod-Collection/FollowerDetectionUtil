@@ -52,6 +52,11 @@ I.FollowerDetectionUtil.getState()
 --- Script scope: Global, NPC, Creature, Player
 --- @return { followers: table<actor.id, State> }
 I.FollowerDetectionUtil.getFollowerList()
+
+--- Returns version of the interface
+--- Script scope: Global, NPC, Creature, Player
+--- @return number
+I.FollowerDetectionUtil.version
 ```
 
 Available events:

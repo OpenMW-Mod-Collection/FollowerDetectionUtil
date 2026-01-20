@@ -1,3 +1,5 @@
+require("scripts.FollowerDetectionUtil.utils.consts")
+
 local followers = {}
 
 local function onSave()
@@ -24,6 +26,7 @@ return {
     },
     interfaceName = 'FollowerDetectionUtil',
     interface = {
+        version = ModVersion,
         getFollowerList = function() return followers end,
     },
 }
