@@ -43,7 +43,6 @@ function State:__eq(a, b)
        and a.followsPlayer     == b.followsPlayer
 end
 
----Has to be called only after all the events get fired!
 function State:updateFollowerList()
     core.sendGlobalEvent("FDU_UpdateFollowerList", {
         state = self
@@ -80,7 +79,7 @@ function State:setSuperLeader()
     end
 
     self.superLeader = leaderState.leader
-    self.followsPlayer = leaderState.leader.type == types.Player or false
+    self.followsPlayer = leaderState.leader.type == types.Player
 end
 
 return State

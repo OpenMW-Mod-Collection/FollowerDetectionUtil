@@ -17,20 +17,10 @@ local function notifyOtherScripts()
     core.sendGlobalEvent("FDU_FollowerListUpdated", { followers = followers })
 end
 
-local function onSave()
-    return followers
-end
-
-local function onLoad(saveData)
-    if saveData then
-        followers = saveData
-    end
-end
-
 local function updateFollowerList(data)
     local state = data.state
-    
-    -- duplicate
+
+    -- if duplicate
     if followers[state.actor.id] == state then return end
 
     followers[state.actor.id] = state
@@ -38,10 +28,6 @@ local function updateFollowerList(data)
 end
 
 return {
-    engineHandlers = {
-        onSave = onSave,
-        onLoad = onLoad,
-    },
     eventHandlers = {
         FDU_UpdateFollowerList = updateFollowerList
     },

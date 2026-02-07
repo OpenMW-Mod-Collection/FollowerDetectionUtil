@@ -1,1 +1,1 @@
-ModVersion = 1.11
+ModVersion = 1.12

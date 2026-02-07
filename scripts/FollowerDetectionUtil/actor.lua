@@ -36,16 +36,6 @@ local function onUpdate(dt)
     state:setLeader(leader)
 end
 
-local function onSave()
-    return followers
-end
-
-local function onLoad(saveData)
-    if saveData then
-        followers = saveData
-    end
-end
-
 -- +----------------+
 -- | Event handlers |
 -- +----------------+
@@ -73,8 +63,6 @@ end
 return {
     engineHandlers = {
         onUpdate = onUpdate,
-        onSave = onSave,
-        onLoad = onLoad,
     },
     eventHandlers = {
         Died = died,

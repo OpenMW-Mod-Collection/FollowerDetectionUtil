@@ -1,5 +1,11 @@
 # Follower Detection Util (OpenMW)
 
+## 1.1.2
+
+### Fixes
+
+- Fixed lagspikes on follower list updates for saves with a lot of hours in them
+
 ## 1.1.1
 
 ### Changes
