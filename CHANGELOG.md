@@ -1,5 +1,11 @@
 # Follower Detection Util (OpenMW)
 
+## 1.1.3
+
+### Fixes
+
+- Fixed follower list not removing inactive followers
+
 ## 1.1.2
 
 ### Fixes

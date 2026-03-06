@@ -23,7 +23,15 @@ local function updateFollowerList(data)
     -- if duplicate
     if followers[state.actor.id] == state then return end
 
-    followers[state.actor.id] = state
+    if not state.followsPlayer
+        or not state.actor.enabled
+        or not state.actor:isValid()
+    then
+        followers[state.actor.id] = nil
+    else
+        followers[state.actor.id] = state
+    end
+
     notifyOtherScripts()
 end
 

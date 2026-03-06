@@ -10,6 +10,10 @@ local updateTime = math.random() * math.max(0, settings:get('checkFollowersEvery
 local state = State:new(GetLeader())
 local followers = {}
 
+local function noLongerFollowing()
+    state:setLeader(nil)
+end
+
 -- +-----------------+
 -- | Engine handlers |
 -- +-----------------+
@@ -29,7 +33,7 @@ local function onUpdate(dt)
     end
 
     local leader = nil
-    if not self.type.isDead(self) then
+    if not self.type.isDead(self) and self:isValid() then
         leader = GetLeader()
     end
 
@@ -40,10 +44,6 @@ end
 -- | Event handlers |
 -- +----------------+
 
-local function died()
-    state:setLeader(nil)
-end
-
 local function startAIPackage(pkg)
     if (pkg.type == "Follow" or pkg.type == "Escort") and pkg.target:isValid() then
         state:setLeader(pkg.target)
@@ -52,7 +52,7 @@ end
 
 local function removeAIPackage(pkgType)
     if pkgType == "Follow" or pkgType == "Escort" then
-        state:setLeader(nil)
+        noLongerFollowing()
     end
 end
 
@@ -63,9 +63,10 @@ end
 return {
     engineHandlers = {
         onUpdate = onUpdate,
+        onInactive = noLongerFollowing,
     },
     eventHandlers = {
-        Died = died,
+        Died = noLongerFollowing,
         StartAIPackage = startAIPackage,
         RemoveAIPackage = removeAIPackage,
         FDU_UpdateFollowerList = updateFollowerList,
