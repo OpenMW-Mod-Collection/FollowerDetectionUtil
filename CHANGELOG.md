@@ -1,5 +1,10 @@
 # Follower Detection Util (OpenMW)
 
+## 1.1.4
+
+- Fixed incorrect follower removal when the world is paused
+- Unloaded followers are no longer removed from the follower list
+
 ## 1.1.3
 
 ### Fixes
