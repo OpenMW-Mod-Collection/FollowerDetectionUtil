@@ -6,7 +6,8 @@ require("scripts.FollowerDetectionUtil.logic.ai")
 require("scripts.FollowerDetectionUtil.utils.consts")
 
 local settings = storage.globalSection("SettingsFollowerDetectionUtil_settings")
-local updateTime = math.random() * math.max(0, settings:get('checkFollowersEvery'))
+local checkEvery = math.max(0, settings:get('checkFollowersEvery'))
+local updateTime = math.random() * checkEvery
 local state = State:new(GetLeader())
 local followers = {}
 
@@ -20,7 +21,6 @@ end
 
 local function onUpdate(dt)
     updateTime = updateTime + dt
-    local checkEvery = math.max(0, settings:get('checkFollowersEvery'))
 
     if updateTime < checkEvery then return end
 
@@ -32,12 +32,11 @@ local function onUpdate(dt)
         end
     end
 
-    local leader = nil
-    if not self.type.isDead(self) and self:isValid() then
-        leader = GetLeader()
-    end
-
-    state:setLeader(leader)
+    state:setLeader(
+        not self.type.isDead(self) and self:isValid()
+        and GetLeader()
+        or nil
+    )
 end
 
 -- +----------------+

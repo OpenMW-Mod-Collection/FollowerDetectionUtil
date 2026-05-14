@@ -1,5 +1,9 @@
 # Follower Detection Util (OpenMW)
 
+## 1.1.5
+
+- Performance improvements
+
 ## 1.1.4
 
 - Fixed incorrect follower removal when the world is paused
