@@ -1,5 +1,10 @@
 # Follower Detection Util (OpenMW)
 
+## 1.1.7
+
+- Made settings apply without needing to reload scripts
+- Removed leftover prints
+
 ## 1.1.6
 
 - Fixed events being sent twice. I think?

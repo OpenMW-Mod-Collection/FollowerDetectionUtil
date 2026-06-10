@@ -50,13 +50,12 @@ function State:__eq(a, b)
 end
 
 function State:updateFollowerList()
-    print(tostring(self))
     core.sendGlobalEvent("FDU_UpdateFollowerList", {
         state = self
     })
 end
 
----@param leader GameObject
+---@param leader GameObject|nil
 function State:setLeader(leader)
     if leader == self.leader then return end
     -- skip first update to initialize the script first

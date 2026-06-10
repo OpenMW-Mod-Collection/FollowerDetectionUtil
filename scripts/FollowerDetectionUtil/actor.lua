@@ -1,13 +1,15 @@
+---@diagnostic disable: param-type-mismatch
 local storage = require("openmw.storage")
 local self = require("openmw.self")
+local async = require("openmw.async")
 
 local State = require("scripts.FollowerDetectionUtil.model.state")
+local settingsCache = require("scripts.FollowerDetectionUtil.utils.settingsCache")
 require("scripts.FollowerDetectionUtil.logic.ai")
 require("scripts.FollowerDetectionUtil.utils.consts")
 
-local settings = storage.globalSection("SettingsFollowerDetectionUtil_settings")
-local checkEvery = math.max(0, settings:get('checkFollowersEvery'))
-local updateTime = math.random() * checkEvery
+local settings = settingsCache.new(storage.globalSection("SettingsFollowerDetectionUtil_settings"), async)
+local updateTime = math.random() * settings.checkFollowersEvery
 local state = State:new(GetLeader())
 local followers = {}
 
@@ -22,13 +24,13 @@ end
 local function onUpdate(dt)
     updateTime = updateTime + dt
 
-    if updateTime < checkEvery then return end
+    if updateTime < settings.checkFollowersEvery then return end
 
-    if checkEvery == 0 then
+    if settings.checkFollowersEvery == 0 then
         updateTime = 0
     else
-        while updateTime > checkEvery do
-            updateTime = updateTime - checkEvery
+        while updateTime > settings.checkFollowersEvery do
+            updateTime = updateTime - settings.checkFollowersEvery
         end
     end
 
