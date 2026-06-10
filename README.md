@@ -22,7 +22,7 @@ Each NPC and Creature is assigned a `State` containing:
 - **Actor** - the actor this state belongs to
 - **Leader** - the actor being followed
 - **Super Leader** - the actor the leader follows (used mainly for summons)
-- **Follows player** - `true` if either Leader or Super Leader is the player
+- **Follows player** - `true` if either Leader or Super Leader is a player
 
 There's also a `FollowerList` that is being shared between all actors, players and a global scripts. It is indexed by `actor.id` (not `actor.recordId`) and contains all the `States` which have a `Leader`.
 
@@ -34,9 +34,9 @@ Both `State` and `FollowerList` can be accessed with FDU interfaces.
 
 ```lua
 ---@class State
----@field actor types.NPC|types.Creature
----@field leader types.Actor|nil
----@field superLeader types.Actor|nil
+---@field actor openmw.types.NPC|openmw.types.Creature
+---@field leader openmw.types.Actor|nil
+---@field superLeader openmw.types.Actor|nil
 ---@field followsPlayer boolean
 ```
 
@@ -53,7 +53,7 @@ I.FollowerDetectionUtil.getState()
 --- @return { followers: table<actor.id, State> }
 I.FollowerDetectionUtil.getFollowerList()
 
---- Returns version of the mod.
+--- Returns version of the interface.
 --- Script scope: Global, NPC, Creature, Player
 --- @return number
 I.FollowerDetectionUtil.version
@@ -62,13 +62,19 @@ I.FollowerDetectionUtil.version
 Available events:
 
 ```lua
---- Returns State of each current follower.
+--- Returns State of a current follower being updated.
+--- Sent on: follower state update
+--- Script scope: Global
+--- @return { state: State }
+FDU_UpdateFollowerList
+
+--- Returns States of all existing followers.
 --- Sent on: follower list being updated
 --- Script scope: NPC, Creature, Player
 --- @return { followers: table<actor.id, State> }
 FDU_UpdateFollowerList
 
---- Returns State of each current follower.
+--- Returns States of all existing followers.
 --- Sent on: follower list being updated
 --- Script scope: Global
 --- @return { followers: table<actor.id, State> }

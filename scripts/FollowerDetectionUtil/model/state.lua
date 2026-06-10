@@ -4,9 +4,9 @@ local core = require("openmw.core")
 local I = require("openmw.interfaces")
 
 ---@class State
----@field actor any|nil
----@field leader any|nil
----@field superLeader any|nil
+---@field actor GameObject
+---@field leader GameObject|nil
+---@field superLeader GameObject|nil
 ---@field followsPlayer boolean
 local State = {}
 State.__index = State
@@ -20,6 +20,7 @@ function State:new(leader)
     return self
 end
 
+---@return string
 function State:__tostring()
     local lines = {
         "State(",
@@ -32,10 +33,15 @@ function State:__tostring()
     return table.concat(lines, "\n")
 end
 
+---@param x GameObject
+---@return string|nil
 local function eqId(x)
     return x and x.id or nil
 end
 
+---@param a State
+---@param b State
+---@return boolean
 function State:__eq(a, b)
     return eqId(a.actor)       == eqId(b.actor)
        and eqId(a.leader)      == eqId(b.leader)
@@ -44,42 +50,40 @@ function State:__eq(a, b)
 end
 
 function State:updateFollowerList()
+    print(tostring(self))
     core.sendGlobalEvent("FDU_UpdateFollowerList", {
         state = self
     })
 end
 
----@param leader any
+---@param leader GameObject
 function State:setLeader(leader)
     if leader == self.leader then return end
+    -- skip first update to initialize the script first
+    if not I.FollowerDetectionUtil then return end
 
     self.leader = leader
-    self.followsPlayer = leader and leader.type == types.Player or false
+    self.followsPlayer = leader and types.Player.objectIsInstance(leader) or false
+    self:setSuperLeader()
 
-    if leader then
-        self.setSuperLeader(self)
-    end
-
-    self.updateFollowerList(self)
+    self:updateFollowerList()
 end
 
 function State:setSuperLeader()
-    -- skip first update to initialize the script first
-    if not I.FollowerDetectionUtil then
-        self.leader = nil
+    if not self.leader then
+        self.superLeader = nil
         return
     end
 
     local followerList = I.FollowerDetectionUtil.getFollowerList()
     local leaderState = followerList[self.leader.id]
 
-    if not (leaderState and leaderState.leader) then
+    if leaderState and leaderState.leader then
+        self.superLeader = leaderState.leader
+        self.followsPlayer = types.Player.objectIsInstance(leaderState)
+    else
         self.superLeader = nil
-        return
     end
-
-    self.superLeader = leaderState.leader
-    self.followsPlayer = leaderState.leader.type == types.Player
 end
 
 return State

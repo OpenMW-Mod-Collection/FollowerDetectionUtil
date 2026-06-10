@@ -1,5 +1,11 @@
 # Follower Detection Util (OpenMW)
 
+## 1.1.6
+
+- Fixed events being sent twice. I think?
+- Fixed superleader not being set to nil if actor loses their leader
+- Improved docs
+
 ## 1.1.5
 
 - Performance improvements
