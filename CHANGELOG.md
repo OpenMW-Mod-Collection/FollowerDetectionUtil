@@ -2,7 +2,7 @@
 
 ## 1.1.8
 
-- Fixed mod not being abre to reach settings on the first install
+- Fixed mod not being able to reach settings on the first install
 
 ## 1.1.7
 
