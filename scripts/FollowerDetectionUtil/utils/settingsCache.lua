@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-doc-name, undefined-field
 ---@omw-context local | global
 --
 -- USAGE:

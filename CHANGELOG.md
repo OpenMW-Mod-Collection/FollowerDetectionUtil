@@ -1,5 +1,9 @@
 # Follower Detection Util (OpenMW)
 
+## 1.1.8
+
+- Fixed mod not being abre to reach settings on the first install
+
 ## 1.1.7
 
 - Made settings apply without needing to reload scripts
