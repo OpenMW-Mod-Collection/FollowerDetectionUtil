@@ -1,1 +1,5 @@
-ModVersion = 2
+local C = {}
+
+C.interfaceVersion = 3
+
+return C

@@ -50,9 +50,12 @@ function State:__eq(a, b)
 end
 
 function State:updateFollowerList()
+    ---@deprecated
     core.sendGlobalEvent("FDU_UpdateFollowerList", {
         state = self
     })
+
+    core.sendGlobalEvent("FDU_FollowerStateUpdated", self)
 end
 
 ---@param leader GameObject|nil

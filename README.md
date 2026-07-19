@@ -34,54 +34,53 @@ Both `State` and `FollowerList` can be accessed with FDU interfaces.
 
 ```lua
 ---@class State
----@field actor openmw.types.NPC|openmw.types.Creature
----@field leader openmw.types.Actor|nil
----@field superLeader openmw.types.Actor|nil
+---@field actor GameObject
+---@field leader GameObject|nil
+---@field superLeader GameObject|nil
 ---@field followsPlayer boolean
 ```
 
 Available interface endpoints:
 
 ```lua
---- Returns the State of the calling actor.
---- Script scope: NPC, Creature
---- @return State
+---Returns the State of the calling actor.
+---Script scope: NPC, Creature
+---@return State
 I.FollowerDetectionUtil.getState()
 
---- Returns State of each current follower.
---- Script scope: Global, NPC, Creature, Player
---- @return { followers: table<actor.id, State> }
+---Returns State of each current follower.
+---Script scope: Global, NPC, Creature, Player
+---@return table<actor.id, State>
 I.FollowerDetectionUtil.getFollowerList()
 
---- Returns version of the interface.
---- Script scope: Global, NPC, Creature, Player
---- @return number
+---Shortcut for checking if the follower follows the actor
+---Script scope: Gloabl, NPC, Creature, Player
+---@param fState State
+---@param potentialLeader GameObject
+---@return boolean
+I.FollowerDetectionUtil.follows(fState, potentialLeader)
+
+---Returns version of the interface.
+---Script scope: Global, NPC, Creature, Player
+---@return number
 I.FollowerDetectionUtil.version
 ```
 
 Available events:
 
 ```lua
---- Returns State of a current follower being updated.
---- Sent on: follower state update
---- Script scope: Global
---- @return { state: State }
-FDU_UpdateFollowerList
+---Returns State of a single follower being updated.
+---Sent on: follower state update
+---Script scope: Global
+---@return State
+FDU_FollowerStateUpdated
 
---- Returns States of all existing followers.
---- Sent on: follower list being updated
---- Script scope: NPC, Creature, Player
---- @return { followers: table<actor.id, State> }
-FDU_UpdateFollowerList
-
---- Returns States of all existing followers.
---- Sent on: follower list being updated
---- Script scope: Global
---- @return { followers: table<actor.id, State> }
-FDU_FollowerListUpdated
+---Returns States of all existing followers.
+---Sent on: follower list being updated
+---Script scope: Global, NPC, Creature, Player
+---@return table<actor.id, State>
+FDU_SyncFollowerList
 ```
-
-As a practical example of FDU in use, see my Friendlier Fire mod ([Nexus](https://www.nexusmods.com/morrowind/mods/57975), [GitHub](https://github.com/OpenMW-Mod-Collection/FriendlierFire)).
 
 ## Credits
 

@@ -1,5 +1,14 @@
 # Follower Detection Util (OpenMW)
 
+## 2.0
+
+- Deprecated the previous event convention, making it more intuitive and simple. Old events still work, so it's backwards compatible with mods built for 1.X versions of the library
+- Bumped up the interface version
+- Escort package is no longer affects follower status due to it breaking the logic (the package is not removed when the actor reaches its destination, making them your permanent followers) and its inclusion not making much sense in the first place (really, what did I think when I added it?)
+- Added I.FollowerDetectionUtil.follows() shortcut function. Check the readme or Nexus description for details
+- General optimization pass, but nothing significant
+- Added more bugs to fix later
+
 ## 1.1.8
 
 - Fixed mod not being able to reach settings on the first install
