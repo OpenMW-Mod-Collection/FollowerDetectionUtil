@@ -1,5 +1,11 @@
 # Follower Detection Util (OpenMW)
 
+## 2.1
+
+- Added isSummon boolean field to the followerState. Supports vanilla and PTR followers
+- Changed code annotations to Cod3x notation
+- Bumped up the interface version to 4
+
 ## 2.0
 
 - Deprecated the previous event convention, making it more intuitive and simple. Old events still work, so it's backwards compatible with mods built for 1.X versions of the library

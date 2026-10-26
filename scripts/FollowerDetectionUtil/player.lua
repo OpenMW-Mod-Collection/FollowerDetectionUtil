@@ -1,5 +1,4 @@
-local self = require("openmw.self")
-
+---@omw-context player
 local consts = require("scripts.FollowerDetectionUtil.utils.consts")
 
 local followers = {}

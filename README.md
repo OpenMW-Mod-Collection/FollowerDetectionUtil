@@ -34,9 +34,10 @@ Both `State` and `FollowerList` can be accessed with FDU interfaces.
 
 ```lua
 ---@class State
----@field actor GameObject
----@field leader GameObject|nil
----@field superLeader GameObject|nil
+---@field actor openmw.GObject
+---@field leader openmw.GObject?
+---@field superLeader openmw.GObject?
+---@field isSummon boolean
 ---@field followsPlayer boolean
 ```
 
@@ -56,7 +57,7 @@ I.FollowerDetectionUtil.getFollowerList()
 ---Shortcut for checking if the follower follows the actor
 ---Script scope: Gloabl, NPC, Creature, Player
 ---@param fState State
----@param potentialLeader GameObject
+---@param potentialLeader openmw.GObject
 ---@return boolean
 I.FollowerDetectionUtil.follows(fState, potentialLeader)
 

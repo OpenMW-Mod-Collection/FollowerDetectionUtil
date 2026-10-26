@@ -3,3 +3,4 @@
 *.jpeg
 *.psd
 *.zip
+.luarc.json

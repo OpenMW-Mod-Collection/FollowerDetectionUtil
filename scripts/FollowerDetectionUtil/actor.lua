@@ -1,4 +1,4 @@
----@diagnostic disable: param-type-mismatch
+---@omw-context local
 local storage = require("openmw.storage")
 local self = require("openmw.self")
 local async = require("openmw.async")
