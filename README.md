@@ -41,7 +41,7 @@ Both `State` and `FollowerList` can be accessed with FDU interfaces.
 ---@field followsPlayer boolean
 ```
 
-State.isSummon supports summons from:
+`State.isSummon` supports summons from:
 
 - Vanilla
 - Tamriel_Data
