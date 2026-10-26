@@ -2,7 +2,7 @@
 local world = require("openmw.world")
 local core = require("openmw.core")
 
-local consts = require("scripts.FollowerDetectionUtil.utils.consts")
+local common = require("scripts.FollowerDetectionUtil.utils.common")
 
 local followers = {}
 local legacyEventData = { followers = followers }
@@ -43,11 +43,12 @@ return {
     },
     interfaceName = 'FollowerDetectionUtil',
     interface = {
-        version = consts.interfaceVersion,
+        version = common.interfaceVersion,
         getFollowerList = function() return followers end,
         follows = function(fState, potentialLeader)
             return (fState.leader and fState.leader.id == potentialLeader.id)
                 or (fState.superLeader and fState.superLeader.id == potentialLeader.id)
         end,
+        isSummon = common.isSummon,
     },
 }

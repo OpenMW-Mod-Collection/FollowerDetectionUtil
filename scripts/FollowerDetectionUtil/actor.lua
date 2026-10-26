@@ -6,7 +6,7 @@ local I = require("openmw.interfaces")
 
 local State = require("scripts.FollowerDetectionUtil.model.state")
 local settingsCache = require("scripts.FollowerDetectionUtil.utils.settingsCache")
-local consts = require("scripts.FollowerDetectionUtil.utils.consts")
+local common = require("scripts.FollowerDetectionUtil.utils.common")
 
 local pendingLeader
 local function leaderCollector(pkg)
@@ -82,12 +82,13 @@ return {
     },
     interfaceName = 'FollowerDetectionUtil',
     interface = {
-        version = consts.interfaceVersion,
+        version = common.interfaceVersion,
         getState = function() return state end,
         getFollowerList = function() return followers end,
         follows = function(fState, potentialLeader)
             return (fState.leader and fState.leader.id == potentialLeader.id)
                 or (fState.superLeader and fState.superLeader.id == potentialLeader.id)
         end,
+        isSummon = common.isSummon,
     },
 }

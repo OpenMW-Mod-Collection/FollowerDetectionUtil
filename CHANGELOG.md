@@ -1,5 +1,10 @@
 # Follower Detection Util (OpenMW)
 
+## 2.2
+
+- Added isSummon function to the interface
+- Bumped up the interface version to 5
+
 ## 2.1
 
 - Added isSummon boolean field to the followerState. Supports vanilla and PTR followers

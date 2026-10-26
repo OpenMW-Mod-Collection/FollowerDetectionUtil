@@ -66,6 +66,12 @@ I.FollowerDetectionUtil.getFollowerList()
 ---@return boolean
 I.FollowerDetectionUtil.follows(fState, potentialLeader)
 
+---Shortcut for checking if the follower is summon
+---Script scope: Gloabl, NPC, Creature, Player
+---@param recordId string 
+---@return boolean
+I.FollowerDetectionUtil.isSummon(recordId)
+
 ---Returns version of the interface.
 ---Script scope: Global, NPC, Creature, Player
 ---@return number
