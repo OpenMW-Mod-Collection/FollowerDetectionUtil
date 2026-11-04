@@ -1,38 +1,42 @@
 ---@diagnostic disable: undefined-field
 ---@omw-context local
 local omw_self = require("openmw.self")
-local types = require("openmw.types")
 local core = require("openmw.core")
-local I = require("openmw.interfaces")
 
----@param actor openmw.self
----@return boolean
-local function isSummon(actor)
-    local id = actor.recordId
-    return (
-        string.find(id, "_summon$")
-        or id == "bonewalker_greater_summ"
-        or string.find(id, "_s$")     -- Tamriel Data compat
-    ) ~= nil
-end
+local common = require("scripts.FollowerDetectionUtil.utils.common")
 
 ---@class State
 ---@field actor openmw.self
----@field leader openmw.GObject?
----@field superLeader openmw.GObject?
+---@field leader openmw.GObject? Who the actor follows directly
+---@field leaders openmw.GObject[] Whole chain, nearest first: `leaders[1] == leader`, `leaders[2] == superLeader`, ...
+---@field rootLeader openmw.GObject? The last actor of the chain, `leaders[#leaders]`
+---@field depth integer Length of the chain: 0 - follows nobody, 1 - follows someone, 2 - follows a follower, ...
+---@field followers openmw.GObject[] Actors who follow this actor directly
 ---@field isSummon boolean
----@field followsPlayer boolean
+---@field followsPlayer boolean `true` if the player is anywhere in the chain
 local State = {}
 State.__index = State
 
 ---@param leader openmw.GObject?
 ---@return State
 function State:new(leader)
-    self = setmetatable({}, State)
-    self.actor = omw_self
-    self.isSummon = isSummon(omw_self)
-    self:setLeader(leader)
-    return self
+    local state = setmetatable({}, State)
+    state.actor = omw_self
+    state.isSummon = common.isSummon(omw_self.recordId)
+    state.leaders = {}
+    state.depth = 0
+    state.followers = {}
+    state.followsPlayer = false
+    state:setLeader(leader)
+    return state
+end
+
+---@param list openmw.GObject[]
+---@return string
+local function idList(list)
+    local ids = {}
+    for i, o in ipairs(list) do ids[i] = o.id end
+    return table.concat(ids, ",")
 end
 
 ---@return string
@@ -43,7 +47,10 @@ function State:__tostring()
         "  followsPlayer = " .. tostring(self.followsPlayer),
         "  leader        = " .. tostring(self.leader),
         "  isSummon      = " .. tostring(self.isSummon),
-        "  superLeader   = " .. tostring(self.superLeader),
+        "  rootLeader    = " .. tostring(self.rootLeader),
+        "  depth         = " .. tostring(self.depth),
+        "  leaders       = [" .. idList(self.leaders) .. "]",
+        "  followers     = [" .. idList(self.followers) .. "]",
         ")",
     }
     return table.concat(lines, "\n")
@@ -58,51 +65,38 @@ end
 ---@param a State
 ---@param b State
 ---@return boolean
-function State:__eq(a, b)
+function State.__eq(a, b)
     ---@diagnostic disable-next-line: param-type-mismatch
     return eqId(a.actor) == eqId(b.actor)
         and eqId(a.leader) == eqId(b.leader)
-        and eqId(a.superLeader) == eqId(b.superLeader)
+        and idList(a.leaders) == idList(b.leaders)
+        and idList(a.followers) == idList(b.followers)
         and a.followsPlayer == b.followsPlayer
-end
-
-function State:updateFollowerList()
-    ---@deprecated
-    core.sendGlobalEvent("FDU_UpdateFollowerList", {
-        state = self
-    })
-
-    core.sendGlobalEvent("FDU_FollowerStateUpdated", self)
 end
 
 ---@param leader openmw.GObject?
 function State:setLeader(leader)
     if leader == self.leader then return end
-    -- skip first update to initialize the script first
-    if not I.FollowerDetectionUtil then return end
-
     self.leader = leader
-    self.followsPlayer = leader and types.Player.objectIsInstance(leader) or false
-    self:setSuperLeader()
-
     self:updateFollowerList()
 end
 
-function State:setSuperLeader()
-    if not self.leader then
-        self.superLeader = nil
-        return
-    end
+function State:updateFollowerList()
+    core.sendGlobalEvent("FDU_LeaderChanged", {
+        actor = self.actor.object,
+        leader = self.leader,
+    })
+end
 
-    local followerList = I.FollowerDetectionUtil.getFollowerList()
-    local leaderState = followerList[self.leader.id]
+---@param data State
+function State:sync(data)
+    if eqId(data.leader) ~= eqId(self.leader) then return end
 
-    if leaderState and leaderState.leader then
-        self.superLeader = leaderState.leader
-        self.followsPlayer = types.Player.objectIsInstance(leaderState)
-    else
-        self.superLeader = nil
-    end
+    self.leaders = data.leaders
+    self.rootLeader = data.rootLeader
+    self.depth = data.depth
+    self.followers = data.followers
+    self.followsPlayer = data.followsPlayer
 end
 
 return State

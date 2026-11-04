@@ -15,10 +15,10 @@ return {
     interface = {
         version = common.interfaceVersion,
         getFollowerList = function() return followers end,
-        follows = function(fState, potentialLeader)
-            return (fState.leader and fState.leader.id == potentialLeader.id)
-                or (fState.superLeader and fState.superLeader.id == potentialLeader.id)
+        getFollowersOf = function(leader, recursive)
+            return common.getFollowersOf(followers, leader, recursive)
         end,
+        follows = common.follows,
         isSummon = common.isSummon,
     },
 }

@@ -1,5 +1,18 @@
 # Follower Detection Util (OpenMW)
 
+## 3.0
+
+- Major rewrite of the follower chaining mechanism
+- Added support for follower chains of arbitrary length
+- Fixed follower chaining (it straight up didn't work earlier)
+- Fixed followsPlayer not actually working all this time
+- Added `leaders`, `rootLeader`, `depth` and `followers` fields to the State
+- Removed `superLeader` field from the State, since ti was replaced by `leaders`
+- Added `I.FollowerDetectionUtil.getFollowersOf(leader, recursive)`
+- State gotten via `I.FollowerDetectionUtil.getState()` now always stays in sync on the caller mod side
+- Bumped up the interface version to 6
+- Backwards compatible with any mods that didn't use `superLeader`. If you did, just swap it with `leaders[2]`.
+
 ## 2.2
 
 - Added isSummon function to the interface
@@ -14,11 +27,11 @@
 ## 2.0
 
 - Deprecated the previous event convention, making it more intuitive and simple. Old events still work, so it's backwards compatible with mods built for 1.X versions of the library
-- Bumped up the interface version
 - Escort package is no longer affects follower status due to it breaking the logic (the package is not removed when the actor reaches its destination, making them your permanent followers) and its inclusion not making much sense in the first place (really, what did I think when I added it?)
 - Added I.FollowerDetectionUtil.follows() shortcut function. Check the readme or Nexus description for details
 - General optimization pass, but nothing significant
 - Added more bugs to fix later
+- Bumped up the interface version to 3
 
 ## 1.1.8
 

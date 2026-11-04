@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-field
 ---@omw-context local
 local storage = require("openmw.storage")
 local self = require("openmw.self")
@@ -35,6 +36,20 @@ end
 -- | Engine handlers |
 -- +-----------------+
 
+local function onInactive()
+    if not self.enabled then
+        noLongerFollowing()
+    end
+end
+
+-- the script could have been kept while the actor was unloaded,
+-- so what the global scripts knows about it may be outdated by now
+local function onActive()
+    if state.leader then
+        state:updateFollowerList()
+    end
+end
+
 local function onUpdate(dt)
     local interval = settings.checkFollowersEvery
     updateTime = updateTime + dt
@@ -69,26 +84,32 @@ local function syncFollowerList(data)
     followers = data
 end
 
+local function syncState(data)
+    state:sync(data)
+end
+
 return {
     engineHandlers = {
         onUpdate = onUpdate,
-        onInactive = noLongerFollowing,
+        onActive = onActive,
+        onInactive = onInactive,
     },
     eventHandlers = {
         Died = noLongerFollowing,
         StartAIPackage = startAIPackage,
         RemoveAIPackage = removeAIPackage,
         FDU_SyncFollowerList = syncFollowerList,
+        FDU_SyncState = syncState,
     },
     interfaceName = 'FollowerDetectionUtil',
     interface = {
         version = common.interfaceVersion,
         getState = function() return state end,
         getFollowerList = function() return followers end,
-        follows = function(fState, potentialLeader)
-            return (fState.leader and fState.leader.id == potentialLeader.id)
-                or (fState.superLeader and fState.superLeader.id == potentialLeader.id)
+        getFollowersOf = function(leader, recursive)
+            return common.getFollowersOf(followers, leader, recursive)
         end,
+        follows = common.follows,
         isSummon = common.isSummon,
     },
 }
