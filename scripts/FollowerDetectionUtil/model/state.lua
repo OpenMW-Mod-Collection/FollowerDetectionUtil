@@ -9,6 +9,7 @@ local common = require("scripts.FollowerDetectionUtil.utils.common")
 ---@field actor openmw.self
 ---@field leader openmw.GObject? Who the actor follows directly
 ---@field leaders openmw.GObject[] Whole chain, nearest first: `leaders[1] == leader`, `leaders[2] == superLeader`, ...
+---@field superLeader openmw.GObject? @deprecated Alias for `leaders[2]`
 ---@field rootLeader openmw.GObject? The last actor of the chain, `leaders[#leaders]`
 ---@field depth integer Length of the chain: 0 - follows nobody, 1 - follows someone, 2 - follows a follower, ...
 ---@field followers openmw.GObject[] Actors who follow this actor directly
@@ -24,6 +25,7 @@ function State:new(leader)
     state.actor = omw_self
     state.isSummon = common.isSummon(omw_self.recordId)
     state.leaders = {}
+    state.superLeader = nil
     state.depth = 0
     state.followers = {}
     state.followsPlayer = false
@@ -46,6 +48,7 @@ function State:__tostring()
         "  actor         = " .. tostring(self.actor),
         "  followsPlayer = " .. tostring(self.followsPlayer),
         "  leader        = " .. tostring(self.leader),
+        "  superLeader   = " .. tostring(self.superLeader),
         "  isSummon      = " .. tostring(self.isSummon),
         "  rootLeader    = " .. tostring(self.rootLeader),
         "  depth         = " .. tostring(self.depth),
@@ -69,6 +72,7 @@ function State.__eq(a, b)
     ---@diagnostic disable-next-line: param-type-mismatch
     return eqId(a.actor) == eqId(b.actor)
         and eqId(a.leader) == eqId(b.leader)
+        and eqId(a.superLeader) == eqId(b.superLeader)
         and idList(a.leaders) == idList(b.leaders)
         and idList(a.followers) == idList(b.followers)
         and a.followsPlayer == b.followsPlayer
@@ -83,7 +87,7 @@ end
 
 function State:updateFollowerList()
     core.sendGlobalEvent("FDU_LeaderChanged", {
-        actor = self.actor.object,
+        actor = self.actor,
         leader = self.leader,
     })
 end
@@ -93,6 +97,7 @@ function State:sync(data)
     if eqId(data.leader) ~= eqId(self.leader) then return end
 
     self.leaders = data.leaders
+    self.superLeader = data.superLeader or (self.leaders[2] or nil)
     self.rootLeader = data.rootLeader
     self.depth = data.depth
     self.followers = data.followers

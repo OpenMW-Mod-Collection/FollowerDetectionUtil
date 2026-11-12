@@ -23,8 +23,8 @@ Each NPC and Creature is assigned a `State` containing:
 - **Leader** - the actor being followed
 - **Leaders** - the whole follower chain
 - **Followers** - the actors that follow this actor directly
-- **Follows player?** - `true` if the player is anywhere in the chain
-- **Is summon?** - `true` if the summon record id matches the FDU's summon naming rules
+- **Follows player** - `true` if the player is anywhere in the chain
+- **Is summon** - `true` if the summon record id matches the FDU's summon naming rules
 
 There's also a `FollowerList` that is being shared between all actors, players and the global script. It is indexed by `actor.id` (not `actor.recordId`) and contains the `States` of all actors that follow anyone.
 
@@ -44,7 +44,7 @@ Actor is no longer considered a follower if it:
 ---@field leader openmw.GObject?         -- who the actor follows directly
 ---@field leaders openmw.GObject[]       -- the whole follower chain
 ---@field rootLeader openmw.GObject?     -- last actor of the chain, same as leaders[#leaders]
----@field depth integer                  -- #leaders. 0 - follows nobody, 1 - follows someone, 2 - follows a follower...
+---@field depth integer                  -- #leaders. 0 - follows nobody, 1 - follows someone, 2 - follows someone's follower, etc
 ---@field followers openmw.GObject[]     -- actors that follow this actor directly
 ---@field isSummon boolean
 ---@field followsPlayer boolean          -- the player is anywhere in the chain

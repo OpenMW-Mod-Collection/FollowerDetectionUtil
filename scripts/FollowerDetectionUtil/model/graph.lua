@@ -162,10 +162,12 @@ function Graph:build(actor)
     end
 
     local root = leaders[#leaders]
+    local superLeader = leaders[2]
     return {
         actor = actor,
         leader = leaders[1],
         leaders = leaders,
+        superLeader = superLeader,
         rootLeader = root,
         depth = #leaders,
         followers = followers,

@@ -7,11 +7,11 @@
 - Fixed follower chaining (it straight up didn't work earlier)
 - Fixed followsPlayer not actually working all this time
 - Added `leaders`, `rootLeader`, `depth` and `followers` fields to the State
-- Removed `superLeader` field from the State, since ti was replaced by `leaders`
+- `superLeader` in favor of `leaders[2]`
 - Added `I.FollowerDetectionUtil.getFollowersOf(leader, recursive)`
-- State gotten via `I.FollowerDetectionUtil.getState()` now always stays in sync on the caller mod side
+- State returned by `I.FollowerDetectionUtil.getState()` now stays in sync on the caller mod side
 - Bumped up the interface version to 6
-- Backwards compatible with any mods that didn't use `superLeader`. If you did, just swap it with `leaders[2]`.
+- Complete backwards compatibility with FDU 2.2
 
 ## 2.2
 
@@ -20,15 +20,15 @@
 
 ## 2.1
 
-- Added isSummon boolean field to the followerState. Supports vanilla and PTR followers
+- Added `isSummon` boolean field to the follower state. Supports vanilla and PTR followers
 - Changed code annotations to Cod3x notation
 - Bumped up the interface version to 4
 
 ## 2.0
 
 - Deprecated the previous event convention, making it more intuitive and simple. Old events still work, so it's backwards compatible with mods built for 1.X versions of the library
-- Escort package is no longer affects follower status due to it breaking the logic (the package is not removed when the actor reaches its destination, making them your permanent followers) and its inclusion not making much sense in the first place (really, what did I think when I added it?)
-- Added I.FollowerDetectionUtil.follows() shortcut function. Check the readme or Nexus description for details
+- The escort package no longer affects follower status because it breaks the logic (the package is not removed when the actor reaches its destination, making them permanent followers), and its inclusion doesn't make much sense in the first place (really, what did I think when I added it?)
+- Added `I.FollowerDetectionUtil.follows()` shortcut function. Check the README or Nexus description for details
 - General optimization pass, but nothing significant
 - Added more bugs to fix later
 - Bumped up the interface version to 3
@@ -67,7 +67,7 @@
 
 ### Fixes
 
-- Fixed lagspikes on follower list updates for saves with a lot of hours in them
+- Fixed lag spikes on follower list updates for saves with a lot of hours in them
 
 ## 1.1.1
 
