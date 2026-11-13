@@ -25,7 +25,7 @@ end
 
 local settings = settingsCache.new(storage.globalSection("SettingsFollowerDetectionUtil_settings"), async)
 local updateTime = math.random() * settings.checkFollowersEvery
-local state = State:new(getLeader())
+local state = State:new(not self.type.isDead(self) and getLeader() or nil)
 local followers = {}
 
 local function noLongerFollowing()
@@ -37,10 +37,8 @@ end
 -- +-----------------+
 
 local function onInactive()
-    if not self.enabled then
-        noLongerFollowing()
+            noLongerFollowing()
     end
-end
 
 -- the script could have been kept while the actor was unloaded,
 -- so what the global scripts knows about it may be outdated by now
