@@ -52,15 +52,17 @@ Actor is no longer considered a follower if it:
 
 Theoretical example, `Player > Companion > Summon > Summon's summon`:
 
-| **Actor**       | **Leader** | **Leaders**                   | **Followers**       | **Follows player** |
-| --------------- | ---------- | ----------------------------- | ------------------- | ------------------ |
-| Companion       | Player     | `{Player}`                    | `{Summon}`          | `true`             |
-| Summon          | Companion  | `{Companion, Player}`         | `{Summon's summon}` | `true`             |
-| Summon's summon | Summon     | `{Summon, Companion, Player}` | `{}`                | `true`             |
+| **Actor**       | **Leader** | **Leaders**                 | **Followers**     | **Follows player** |
+| --------------- | ---------- | --------------------------- | ----------------- | ------------------ |
+| Companion       | Player     | {Player}                    | {Summon}          | true               |
+| Summon          | Companion  | {Companion, Player}         | {Summon's summon} | true               |
+| Summon's summon | Summon     | {Summon, Companion, Player} | {}                | true               |
 
-A `State` read from `getFollowerList()` is a snapshot, while the one from `getState()` is kept up to date automatically. `followers` and `leaders` hold actors, not states, so there are no circular references and the states can be sent as event data. Use `getFollowerList()[actor.id]` to get the state of one of them (if it follows the player).
+`A State read` from `getFollowerList()` is a snapshot, while the one from `getState()` is kept up to date automatically.
 
-`State.isSummon` supports summons from:
+Tables `followers` and `leaders` hold actors, not states. Use `getFollowerList()[actor.id]` to get the state of one of them.
+
+`State.isSummon` and `isSummon(recordId)` support summons from:
 
 - Vanilla
 - [Tamriel_Data](https://www.nexusmods.com/morrowind/mods/44537)
