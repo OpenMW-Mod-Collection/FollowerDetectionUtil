@@ -42,10 +42,10 @@ Actor is no longer considered a follower if it:
 ---@class State
 ---@field actor openmw.GObject
 ---@field leader openmw.GObject?         -- who the actor follows directly
----@field leaders openmw.GObject[]       -- the whole follower chain
+---@field leaders openmw.GObject[]       -- the whole leader chain
 ---@field rootLeader openmw.GObject?     -- last actor of the chain, same as leaders[#leaders]
 ---@field depth integer                  -- #leaders. 0 - follows nobody, 1 - follows someone, 2 - follows someone's follower, etc
----@field followers openmw.GObject[]     -- actors that follow this actor directly
+---@field followers openmw.GObject[]     -- actors that follow this actor directly.  For the full follower chain, use I.FollowerDetectionUtil.getFollowersOf()
 ---@field isSummon boolean
 ---@field followsPlayer boolean          -- the player is anywhere in the chain
 ```
@@ -86,10 +86,10 @@ I.FollowerDetectionUtil.getFollowerList()
 ---@return boolean
 I.FollowerDetectionUtil.follows(state, potentialLeader)
 
----Returns States of the followers of the actor, taken from the follower list.
+---Returns States of the followers of the actor.
 ---Script scope: Global, NPC, Creature, Player
 ---@param leader openmw.GObject
----@param recursive boolean? default: false
+---@param recursive boolean? default: false     -- If false, will return only the direct followers. If true, will return the whole follower chain
 ---@return State[]
 I.FollowerDetectionUtil.getFollowersOf(leader, recursive)
 
