@@ -48,7 +48,9 @@ function M.new(section, async, onChange)
             end
         end
 
-        if onChange then onChange(key) end
+        if onChange then
+            onChange(key)
+        end
     end))
 
     return cache

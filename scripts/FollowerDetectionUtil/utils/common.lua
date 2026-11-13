@@ -11,7 +11,7 @@ M.isSummon = function(id)
     return (
         stupidlyNamedSummons[id]
         or string.find(id, "_summon$")
-        or string.find(id, "_s$")  -- Tamriel Data compat
+        or string.find(id, "_s$") -- Tamriel Data compat
     ) ~= nil
 end
 
