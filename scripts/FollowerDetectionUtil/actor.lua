@@ -32,13 +32,17 @@ local function noLongerFollowing()
     state:setLeader(nil)
 end
 
+if self.type.isDead(self) then
+    noLongerFollowing()
+end
+
 -- +-----------------+
 -- | Engine handlers |
 -- +-----------------+
 
 local function onInactive()
-            noLongerFollowing()
-    end
+    noLongerFollowing()
+end
 
 -- the script could have been kept while the actor was unloaded,
 -- so what the global scripts knows about it may be outdated by now
@@ -52,14 +56,12 @@ local function onUpdate(dt)
     local interval = settings.checkFollowersEvery
     updateTime = updateTime + dt
 
-    if updateTime < interval then return end
+    if updateTime < interval then
+        return
+    end
     updateTime = (interval == 0) and 0 or (updateTime % interval)
 
-    state:setLeader(
-        not self.type.isDead(self) and self:isValid()
-        and getLeader()
-        or nil
-    )
+    state:setLeader(not self.type.isDead(self) and self:isValid() and getLeader() or nil)
 end
 
 -- +----------------+
@@ -99,11 +101,15 @@ return {
         FDU_SyncFollowerList = syncFollowerList,
         FDU_SyncState = syncState,
     },
-    interfaceName = 'FollowerDetectionUtil',
+    interfaceName = "FollowerDetectionUtil",
     interface = {
         version = common.interfaceVersion,
-        getState = function() return state end,
-        getFollowerList = function() return followers end,
+        getState = function()
+            return state
+        end,
+        getFollowerList = function()
+            return followers
+        end,
         getFollowersOf = function(leader, recursive)
             return common.getFollowersOf(followers, leader, recursive)
         end,

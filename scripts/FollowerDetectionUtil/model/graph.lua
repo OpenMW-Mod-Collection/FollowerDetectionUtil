@@ -1,5 +1,5 @@
-local types = require "openmw.types"
 ---@omw-context local|global
+local types = require("openmw.types")
 
 ---@class FollowerGraphOptions
 ---@field isSummon fun(recordId: string): boolean
@@ -19,11 +19,11 @@ Graph.__index = Graph
 function Graph.new(opts)
     return setmetatable({
         isSummon = opts.isSummon,
-        nodes = {},    -- [actor.id] = { actor, leader }
+        nodes = {}, -- [actor.id] = { actor, leader }
         children = {}, -- [leader.id] = { [actor.id] = actor }
-        sigs = {},     -- [actor.id] = signature of the last published state
-        depths = {},   -- [actor.id] = depth of the last published state
-        summons = {},  -- [actor.id] = cached isSummon result
+        sigs = {}, -- [actor.id] = signature of the last published state
+        depths = {}, -- [actor.id] = depth of the last published state
+        summons = {}, -- [actor.id] = cached isSummon result
     }, Graph)
 end
 
@@ -113,8 +113,12 @@ end
 ---@return table<string, openmw.GObject>
 function Graph:affectedBy(actor, leader, previous)
     local seeds = { [actor.id] = actor }
-    if leader then seeds[leader.id] = leader end
-    if previous then seeds[previous.id] = previous end
+    if leader then
+        seeds[leader.id] = leader
+    end
+    if previous then
+        seeds[previous.id] = previous
+    end
     self:collectDescendants(actor, seeds)
     return seeds
 end
@@ -127,8 +131,12 @@ end
 ---@return string
 local function signature(state)
     local chain, kids = {}, {}
-    for i, o in ipairs(state.leaders) do chain[i] = o.id end
-    for i, o in ipairs(state.followers) do kids[i] = o.id end
+    for i, o in ipairs(state.leaders) do
+        chain[i] = o.id
+    end
+    for i, o in ipairs(state.followers) do
+        kids[i] = o.id
+    end
     return table.concat(chain, ",") .. "|" .. table.concat(kids, ",")
 end
 
@@ -150,7 +158,9 @@ function Graph:build(actor)
     local followers = {}
     local kids = self.children[id]
     if kids then
-        for _, kid in pairs(kids) do followers[#followers + 1] = kid end
+        for _, kid in pairs(kids) do
+            followers[#followers + 1] = kid
+        end
         table.sort(followers, byId)
     end
 
@@ -176,6 +186,16 @@ function Graph:build(actor)
     }
 end
 
+---@param a State
+---@param b State
+---@return boolean
+local function sortActors(a, b)
+    if a.depth ~= b.depth then
+        return a.depth < b.depth
+    end
+    return a.actor.id < b.actor.id
+end
+
 ---@param seeds table<string, openmw.GObject>
 ---@return table[] changed
 ---@return table<string, boolean> wasFollower [actor.id] = true if the actor was a follower before this refresh
@@ -197,10 +217,7 @@ function Graph:refresh(seeds)
         end
     end
 
-    table.sort(changed, function(a, b)
-        if a.depth ~= b.depth then return a.depth < b.depth end
-        return a.actor.id < b.actor.id
-    end)
+    table.sort(changed, sortActors)
 
     return changed, wasFollower
 end

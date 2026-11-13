@@ -1,9 +1,9 @@
 ---@omw-context menu
-local I = require('openmw.interfaces')
+local I = require("openmw.interfaces")
 
 I.Settings.registerPage {
-    key = 'FollowerDetectionUtil',
-    l10n = 'FollowerDetectionUtil',
-    name = 'page_name',
-    description = 'page_description',
+    key = "FollowerDetectionUtil",
+    l10n = "FollowerDetectionUtil",
+    name = "page_name",
+    description = "page_description",
 }

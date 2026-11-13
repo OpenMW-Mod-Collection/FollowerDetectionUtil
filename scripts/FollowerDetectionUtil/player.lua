@@ -11,10 +11,12 @@ return {
     eventHandlers = {
         FDU_SyncFollowerList = syncFollowerList,
     },
-    interfaceName = 'FollowerDetectionUtil',
+    interfaceName = "FollowerDetectionUtil",
     interface = {
         version = common.interfaceVersion,
-        getFollowerList = function() return followers end,
+        getFollowerList = function()
+            return followers
+        end,
         getFollowersOf = function(leader, recursive)
             return common.getFollowersOf(followers, leader, recursive)
         end,

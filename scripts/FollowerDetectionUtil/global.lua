@@ -93,9 +93,13 @@ end
 ---@param data {actor: openmw.GObject, leader: openmw.GObject?}
 local function leaderChanged(data)
     local actor, leader = data.actor, data.leader
-    if not actor then return end
+    if not actor then
+        return
+    end
 
-    if not actor.enabled then leader = nil end
+    if not actor.enabled then
+        leader = nil
+    end
 
     applyLeader(actor, leader)
 end
@@ -104,10 +108,12 @@ return {
     eventHandlers = {
         FDU_LeaderChanged = leaderChanged,
     },
-    interfaceName = 'FollowerDetectionUtil',
+    interfaceName = "FollowerDetectionUtil",
     interface = {
         version = common.interfaceVersion,
-        getFollowerList = function() return followers end,
+        getFollowerList = function()
+            return followers
+        end,
         getFollowersOf = function(leader, recursive)
             return common.getFollowersOf(followers, leader, recursive)
         end,

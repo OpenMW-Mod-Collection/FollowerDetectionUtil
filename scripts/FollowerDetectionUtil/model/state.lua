@@ -37,7 +37,9 @@ end
 ---@return string
 local function idList(list)
     local ids = {}
-    for i, o in ipairs(list) do ids[i] = o.id end
+    for i, o in ipairs(list) do
+        ids[i] = o.id
+    end
     return table.concat(ids, ",")
 end
 
@@ -80,7 +82,9 @@ end
 
 ---@param leader openmw.GObject?
 function State:setLeader(leader)
-    if leader == self.leader then return end
+    if leader == self.leader then
+        return
+    end
     self.leader = leader
     self:updateFollowerList()
 end
@@ -94,7 +98,9 @@ end
 
 ---@param data State
 function State:sync(data)
-    if eqId(data.leader) ~= eqId(self.leader) then return end
+    if eqId(data.leader) ~= eqId(self.leader) then
+        return
+    end
 
     self.leaders = data.leaders
     self.superLeader = data.superLeader or (self.leaders[2] or nil)
