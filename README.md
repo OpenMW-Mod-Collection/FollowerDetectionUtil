@@ -97,8 +97,6 @@ I.FollowerDetectionUtil.getFollowersOf(leader, recursive)
 
 ---Shortcut for checking if the follower is summon
 ---Script scope: Global, NPC, Creature, Player
----The record ID overload is deprecated; pass an NPC or Creature object instead.
----@overload fun(recordId: string): boolean
 ---@param actor openmw.GObject
 ---@return boolean
 I.FollowerDetectionUtil.isSummon(actor)
