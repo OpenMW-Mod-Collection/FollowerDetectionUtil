@@ -1,4 +1,4 @@
----@diagnostic disable: undefined-field
+---@diagnostic disable: undefined-field, param-type-mismatch
 ---@omw-context local
 local omw_self = require("openmw.self")
 local core = require("openmw.core")
@@ -23,7 +23,7 @@ State.__index = State
 function State:new(leader)
     local state = setmetatable({}, State)
     state.actor = omw_self
-    state.isSummon = common.isSummon(omw_self.recordId)
+    state.isSummon = common.isSummon(omw_self)
     state.leaders = {}
     state.superLeader = nil
     state.depth = 0
@@ -108,6 +108,7 @@ function State:sync(data)
     self.depth = data.depth
     self.followers = data.followers
     self.followsPlayer = data.followsPlayer
+    self.isSummon = data.isSummon
 end
 
 return State

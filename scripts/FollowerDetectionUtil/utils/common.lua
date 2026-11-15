@@ -1,3 +1,4 @@
+---@diagnostic disable: param-type-mismatch
 ---@omw-context local|global
 local M = {}
 
@@ -5,14 +6,47 @@ local stupidlyNamedSummons = {
     ["bonewalker_greater_summ"] = true,
 }
 
----@param id string
+---@type table<integer, fun(actor: openmw.GObject): boolean>
+local summonFilters = {}
+
+local registeredSummonFilters = {}
+
+---@param filter fun(actor: openmw.GObject): boolean
+function M.registerSummonFilter(filter)
+    assert(type(filter) == "function", "summon filter must be a function")
+    if registeredSummonFilters[filter] then
+        return
+    end
+    registeredSummonFilters[filter] = true
+    summonFilters[#summonFilters + 1] = filter
+end
+
+---The record ID overload is deprecated; pass an actor object instead.
+---@overload fun(recordId: string): boolean
+---@param actor openmw.GObject
 ---@return boolean
-M.isSummon = function(id)
-    return (
+M.isSummon = function(actor)
+    local legacyMode = type(actor) == "string"
+    local id = legacyMode and actor or actor.recordId
+
+    if
         stupidlyNamedSummons[id]
         or string.find(id, "_summon$")
         or string.find(id, "_s$") -- Tamriel Data compat
-    ) ~= nil
+    then
+        return true
+    end
+
+    if legacyMode then
+        return false
+    end
+
+    for _, filter in ipairs(summonFilters) do
+        if filter(actor) then
+            return true
+        end
+    end
+    return false
 end
 
 ---@param state State
@@ -49,6 +83,6 @@ M.getFollowersOf = function(list, leader, recursive)
     return result
 end
 
-M.interfaceVersion = 6
+M.interfaceVersion = 7
 
 return M

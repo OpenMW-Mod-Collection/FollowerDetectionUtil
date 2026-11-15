@@ -2,14 +2,14 @@
 local types = require("openmw.types")
 
 ---@class FollowerGraphOptions
----@field isSummon fun(recordId: string): boolean
+---@field isSummon fun(actor: openmw.GObject): boolean
 
 ---@class FollowerGraph
 ---@field private nodes table<string, {actor: openmw.GObject, leader: openmw.GObject}>
 ---@field private children table<string, table<string, openmw.GObject>>
 ---@field private sigs table<string, string>
 ---@field private depths table<string, integer>
----@field private isSummon fun(recordId: string): boolean
+---@field private isSummon fun(actor: openmw.GObject): boolean
 ---@field private summons table<string, boolean>
 local Graph = {}
 Graph.__index = Graph
@@ -137,7 +137,7 @@ local function signature(state)
     for i, o in ipairs(state.followers) do
         kids[i] = o.id
     end
-    return table.concat(chain, ",") .. "|" .. table.concat(kids, ",")
+    return table.concat(chain, ",") .. "|" .. table.concat(kids, ",") .. "|" .. tostring(state.isSummon)
 end
 
 ---@param actor openmw.GObject
@@ -167,7 +167,7 @@ function Graph:build(actor)
     -- recordId can't be read from an object which doesn't exist anymore
     local summon = self.summons[id]
     if summon == nil then
-        summon = self.isSummon(actor.recordId)
+        summon = self.isSummon(actor)
         self.summons[id] = summon
     end
 
@@ -184,6 +184,10 @@ function Graph:build(actor)
         isSummon = summon,
         followsPlayer = root and types.Player.objectIsInstance(root),
     }
+end
+
+function Graph:clearSummonCache()
+    self.summons = {}
 end
 
 ---@param a State

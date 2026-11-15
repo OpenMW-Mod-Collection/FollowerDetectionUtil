@@ -1,4 +1,4 @@
----@diagnostic disable: undefined-field
+---@diagnostic disable: undefined-field, param-type-mismatch
 ---@omw-context local
 local storage = require("openmw.storage")
 local self = require("openmw.self")
@@ -88,6 +88,12 @@ local function syncState(data)
     state:sync(data)
 end
 
+---@param filter fun(actor: openmw.GObject): boolean
+local function registerSummonFilter(filter)
+    common.registerSummonFilter(filter)
+    state.isSummon = common.isSummon(self)
+end
+
 return {
     engineHandlers = {
         onUpdate = onUpdate,
@@ -115,5 +121,6 @@ return {
         end,
         follows = common.follows,
         isSummon = common.isSummon,
+        registerSummonFilter = registerSummonFilter,
     },
 }

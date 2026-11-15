@@ -1,5 +1,12 @@
 # Follower Detection Util (OpenMW)
 
+## 3.1
+
+- Added `I.FollowerDetectionUtil.registerSummonFilter(filter)` for custom summon record IDs for custom summons compatibility
+- `I.FollowerDetectionUtil.isSummon()` and registered filters now accept actor objects
+- Deprecated the record ID overload of `I.FollowerDetectionUtil.isSummon()` in favor of passing actor objects. Record IDs will work, but won't be passed to custom summon filters, so please update them as soon as possible
+- Bumped the interface version to 7
+
 ## 3.0
 
 - Major rewrite of the follower chaining mechanism

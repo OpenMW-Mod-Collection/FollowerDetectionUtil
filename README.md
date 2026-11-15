@@ -97,15 +97,42 @@ I.FollowerDetectionUtil.getFollowersOf(leader, recursive)
 
 ---Shortcut for checking if the follower is summon
 ---Script scope: Global, NPC, Creature, Player
----@param recordId string
+---The record ID overload is deprecated; pass an NPC or Creature object instead.
+---@overload fun(recordId: string): boolean
+---@param actor openmw.GObject
 ---@return boolean
-I.FollowerDetectionUtil.isSummon(recordId)
+I.FollowerDetectionUtil.isSummon(actor)
+
+---Registers an additional summon-matching predicate.
+---Made for cases when you make a mod that adds summon-like followers
+---(those which die or get disabled by themselves)
+---Script scope: Global, NPC, Creature, Player
+---@param filter fun(actor: openmw.GObject): boolean
+I.FollowerDetectionUtil.registerSummonFilter(filter)
 
 ---Returns version of the interface.
 ---Script scope: Global, NPC, Creature, Player
 ---@return number
 I.FollowerDetectionUtil.version
 ```
+
+#### Why should I bother with `I.FollowerDetectionUtil.registerSummonFilter()`?
+
+This function lets mods recognize summon-like followers without requiring FDU or other mods to hardcode each mod’s summon IDs. For example, [BFF](https://www.nexusmods.com/morrowind/mods/59384)’s Immortality script can ignore actors that FDU identifies as summons. Rather than having BFF’s developer add new summon IDs reactively, summon-mod authors can register a filter for their actors.
+
+Passing a record ID to `I.FollowerDetectionUtil.isSummon()` remains supported for built-in naming rules (vanilla and TD summons), but registered filters are not run for string inputs.
+
+Example how it may be used:
+
+```lua
+local I = require("openmw.interfaces")
+
+I.FollowerDetectionUtil.registerSummonFilter(function(actor)
+    return string.find(actor.recordId, "^my_mod_summon_") ~= nil
+end)
+```
+
+Register filters during script initialization for all 4 contexts: Global, NPC, Creature, Player. A filter may be called repeatedly, so keep it side-effect-free and do not throw errors. The function is kept for the lifetime of that script instance and is not persisted in save data.
 
 ### Events
 

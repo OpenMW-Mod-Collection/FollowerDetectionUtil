@@ -90,6 +90,21 @@ local function applyLeader(actor, leader)
     publish(graph:refresh(graph:affectedBy(actor, leader, previous)))
 end
 
+---@param filter fun(actor: openmw.GObject): boolean
+local function registerSummonFilter(filter)
+    common.registerSummonFilter(filter)
+    graph:clearSummonCache()
+
+    local seeds = {}
+    for _, state in pairs(followers) do
+        if state.actor:isValid() then
+            seeds[state.actor.id] = state.actor
+        end
+    end
+    local changed, wasFollower = graph:refresh(seeds)
+    publish(changed, wasFollower)
+end
+
 ---@param data {actor: openmw.GObject, leader: openmw.GObject?}
 local function leaderChanged(data)
     local actor, leader = data.actor, data.leader
@@ -119,5 +134,6 @@ return {
         end,
         follows = common.follows,
         isSummon = common.isSummon,
+        registerSummonFilter = registerSummonFilter,
     },
 }
